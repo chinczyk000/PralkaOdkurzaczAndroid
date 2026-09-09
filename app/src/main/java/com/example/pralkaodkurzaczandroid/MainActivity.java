@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,23 +26,29 @@ public class MainActivity extends AppCompatActivity {
         editTextNumberPralka = findViewById(R.id.editTextNumberPralka);
         buttonOdkurzaczOnOff = findViewById(R.id.buttonOdkurzaczOnOff);
         buttonZatwierdzPralka = findViewById(R.id.buttonZatwierdzPralka);
-        String numerProgramuPrania = editTextNumberPralka.getText().toString();
+        textViewOutputPralka = findViewById(R.id.textViewOutputPralka);
+        textViewOdkurzaczOnOff = findViewById(R.id.textViewOdkurzaczOnOff);
+
         Odkurzacz odkurzacz = new Odkurzacz();
         Pralka pralka = new Pralka();
-        if(odkurzacz.isCzyOdkurzaczJestWlaczony()){
-            buttonOdkurzaczOnOff.setText(odkurzacz.on());
-        }else{
+
+        if (odkurzacz.isCzyOdkurzaczJestWlaczony()) {
             buttonOdkurzaczOnOff.setText(odkurzacz.off());
+            textViewOdkurzaczOnOff.setText("Odkurzacz włączony");
+        } else {
+            buttonOdkurzaczOnOff.setText(odkurzacz.on());
+            textViewOdkurzaczOnOff.setText("Odkurzacz wyłączony");
         }
 
         buttonOdkurzaczOnOff.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(odkurzacz.isCzyOdkurzaczJestWlaczony()){
+
+                        if (odkurzacz.isCzyOdkurzaczJestWlaczony()) {
                             buttonOdkurzaczOnOff.setText(odkurzacz.off());
                             textViewOdkurzaczOnOff.setText("Odkurzacz wyłączony");
-                        }else{
+                        } else {
                             buttonOdkurzaczOnOff.setText(odkurzacz.on());
                             textViewOdkurzaczOnOff.setText("Odkurzacz włączony");
                         }
@@ -58,8 +61,27 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        textViewOutputPralka.setText(pralka.wybierzNumerProgramuPrania(Integer.parseInt(numerProgramuPrania)));
+                        String numerProgramuPrania =
+                                editTextNumberPralka.getText().toString();
 
+                        if (numerProgramuPrania.isEmpty()) {
+                            textViewOutputPralka.setText("Podaj numer programu");
+                            return;
+                        }
+
+                        int numer = Integer.parseInt(numerProgramuPrania);
+
+                        int wynik = pralka.wybierzNumerProgramuPrania(numer);
+
+                        if (wynik >= 1 && wynik <= 12) {
+                            textViewOutputPralka.setText(
+                                    "Wybrano program: " + wynik
+                            );
+                        } else {
+                            textViewOutputPralka.setText(
+                                    "Niepoprawny numer programu"
+                            );
+                        }
                     }
                 }
         );
